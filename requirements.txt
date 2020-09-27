@@ -1,0 +1,8 @@
+python-dotenv==0.10.1
+requests
+wit
+fastapi
+gunicorn
+uvicorn
+cryptography
+sqlalchemy
