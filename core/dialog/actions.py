@@ -123,7 +123,7 @@ def pre_decipher_key(recipient_id, db):
     user = crud.get_user(db, recipient_id)
     fb_bot.send_text_message(
         recipient_id,
-        "Please enter the key that have been shared with you to decrypt the message"
+        "Please enter the key that has been shared with you to decrypt the message"
     )
     crud.update_user_state(db, recipient_id, "WAIT_KEY")
 

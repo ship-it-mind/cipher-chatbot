@@ -5,7 +5,7 @@ from variables import (
     FB_PAGE_ACCESS_TOKEN
 )
 
-DEFAULT_API_VERSION = 2.6
+DEFAULT_API_VERSION = 8.0
 
 
 class NotificationType(Enum):
