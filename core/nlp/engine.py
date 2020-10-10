@@ -1,12 +1,13 @@
 from wit import Wit
 
+from variables import WIT_SERVER_TOKEN
+
 class NLPEngine:
     def __init__(self):
-        self.engine = Wit("FQYILCTR5WYC7VZNAT4M5WDM7D5ZECYD")
+        self.engine = Wit(WIT_SERVER_TOKEN)
 
     def predict(self, message):
         response = self.engine.message(message)
-        print(response)
         try:
             intent = response["intents"][0]["name"]
         except:

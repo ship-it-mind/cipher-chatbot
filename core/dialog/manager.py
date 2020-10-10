@@ -12,10 +12,8 @@ class DialogManager:
     def process_message(self, message, recipient_id, db):
         try:
             user_state = crud.get_user_state(db, recipient_id)
-            print(user_state)
             if user_state == "CONTINUE":
                 intent = self.engine.predict(message)
-                print(intent)
                 return self.get_response(intent, recipient_id, db)
             elif user_state == "WAIT_MESSAGE_CIPHER":
                 actions.cipher(message, recipient_id, db)
@@ -26,7 +24,6 @@ class DialogManager:
             elif user_state == "WAIT_KEY":
                 actions.confirm_pre_decipher(recipient_id, db)
         except Exception as err:
-            print(err)
             actions.send_error(recipient_id, db)
     
     def get_response(self, intent, recipient_id, db):

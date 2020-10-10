@@ -1,5 +1,3 @@
-from typing import Optional
-
 from fastapi import APIRouter, Query, Request, HTTPException, Depends
 from sqlalchemy.orm import Session
 
