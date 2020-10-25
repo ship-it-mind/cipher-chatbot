@@ -45,8 +45,10 @@ class DialogManager:
             if last_intent == "CONFIRM_USING_OLD_KEY":
                 actions.generate_key(recipient_id, db)
             elif last_intent == "CONFIRM_CIPHER_AGAIN":
-                pass
+                return "Great. Let me know if you need anything."
             elif last_intent == "CONFIRM_DECIPHER_AGAIN":
-                pass
+                return "Great. Let me know if you need anything."
+        elif intent == "greeting":
+            return "Hi, Nice to meet you."
         else:
             return "Sorry I didn't get that."
