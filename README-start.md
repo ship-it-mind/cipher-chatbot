@@ -630,16 +630,282 @@ And that's how we use the Send API.
 
 ### Dialog Management
 
+There is a very important concept we should introduce here named `State`. So every step in the conversation that users will have should be categorized into a state category. To make it easy, here is a table that have the states used in the tutorial.
+
+| State                | Description                                                                                                         |
+|----------------------|---------------------------------------------------------------------------------------------------------------------|
+| CONTINUE             | This is the normal state where we use wit.ai to understand the text.                                                |
+| WAIT_MESSAGE_CIPHER  | This state is triggered when the user wants to cipher a message so the next input is expected to be that message.   |
+| WAIT_MESSAGE_DECIFER | This state is triggered when the user wants to decipher a message so the next input is expected to be that message. |
+| WAIT_KEY             | This state is triggered as the user is expected to enter his decipher key.                                          |
+
 In [`core/dialog`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/core/dialog) directory we will find two files:
+
 
 * [`actions.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/dialog/actions.py)
 
-    In this file, We will create the functions that will trigger the CRUD operations function in [`core/db/crud.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/db/crud.py) file, and will also trigger the Messenger API functions in [`connector/facebook/bot.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/connector/facebook/bot.py).
+    In this file, We will create the functions that will trigger the CRUD operations function in [`core/db/crud.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/db/crud.py) file, and will also trigger the Messenger API functions in [`connector/facebook/bot.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/connector/facebook/bot.py). So let's go through them quickly.
+
+    * [`pre_cipher`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L12)
+        
+        This function checks, if the user already have a key, he will be asked if he wants to use it or generate a new one. If not, a new key will be generated for him and he will be asked to enter the message he wants to cipher or encrypt. and also changes the user state to `WAIT_MESSAGE_CIPHER`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def pre_cipher(recipient_id, db):
+            user = crud.get_user(db, recipient_id)
+            key, key_state = crud.get_user_key(db, recipient_id)
+            if key_state == "NEW":
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "I have created a new key. Keep it Safe!!"
+                )
+                fb_bot.send_text_message(
+                    recipient_id,
+                    key
+                )
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "Now enter the message that you want to keep it safe."
+                )
+                crud.update_user_state(db, recipient_id, "WAIT_MESSAGE_CIPHER")
+            elif key_state == "OLD":
+                fb_bot.send_quick_replies(
+                recipient_id,
+                "It seems that you have an already generated key, Do you want to keep using it?",
+                [
+                    {
+                        "content_type": 'text',
+                        "title": 'Yes',
+                        "payload": 'yes'
+                    },
+                    {
+                        "content_type": 'text',
+                        "title": 'No',
+                        "payload": 'no'
+                    }
+                ]
+            )
+                crud.update_user_last_intent(db, recipient_id, "CONFIRM_USING_OLD_KEY")
+        ```
+
+        </details>
+    
+    * [`reset_user_state`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L48)
+        
+        This function resets the user state to the normal one which is `CONTINUE`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def reset_user_state(recipient_id, db):
+            crud.update_user_state(db, recipient_id, "CONTINUE")
+        ```
+
+        </details>
+    
+    * [`generate_key`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L57)
+        
+        This function generates a new key for the user and change his state to `WAIT_MESSAGE_CIPHER`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def generate_key(recipient_id, db):
+            user = crud.get_user(db, recipient_id)
+            key = crud.create_user_key(db, recipient_id)
+            fb_bot.send_text_message(
+                recipient_id,
+                "I have created a new key. Keep it Safe!!"
+            )
+            fb_bot.send_text_message(
+                recipient_id,
+                key.key
+            )
+            fb_bot.send_text_message(
+                recipient_id,
+                "Now enter the message that you want to keep it safe."
+            )
+            crud.update_user_state(db, recipient_id, "WAIT_MESSAGE_CIPHER")
+        ```
+
+        </details>
+    
+    * [`confirm_pre_cipher`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L74)
+        
+        This function asks the user to enter the message he wants to cipher and change his state to `WAIT_MESSAGE_DECIFER`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def confirm_pre_cipher(recipient_id, db):
+            user = crud.get_user(db, recipient_id)
+            fb_bot.send_text_message(
+                recipient_id,
+                "Great. Now enter the message that you want to keep safe."
+            )
+            crud.update_user_state(db, recipient_id, "WAIT_MESSAGE_CIPHER")
+        ```
+
+        </details>
+    
+    * [`cipher`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L89)
+        
+        This function encrypts a message and sends it to the user. It also asks him if he wants to encrypt anything else, and change the last intent to `CONFIRM_CIPHER_AGAIN` and the state to `CONTINUE`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def cipher(message, recipient_id, db):
+            key, _ = crud.get_user_key(db, recipient_id)
+            key = key.encode()
+            message = message.encode()
+            f = Fernet(key)
+            encrypted_message = f.encrypt(message).decode()
+            fb_bot.send_text_message(
+                recipient_id,
+                "This is the encrypted message. It'll only be decrypted using the key that you used"
+            )
+            fb_bot.send_text_message(
+                recipient_id,
+                encrypted_message
+            )
+            fb_bot.send_quick_replies(
+                recipient_id,
+                "Do you want to encrypt anything else?",
+                [
+                    {
+                        "content_type": 'text',
+                        "title": 'Yes',
+                        "payload": 'yes'
+                    },
+                    {
+                        "content_type": 'text',
+                        "title": 'No',
+                        "payload": 'no'
+                    }
+                ]
+            )
+            crud.update_user_last_intent(db, recipient_id, "CONFIRM_CIPHER_AGAIN")
+            crud.update_user_state(db, recipient_id, "CONTINUE")
+        ```
+
+        </details>
+    
+    * [`pre_decipher_key`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L122)
+        
+        This function asks the user to enter his key that will be used to decrypt messages and changes the user state to `WAIT_KEY`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def pre_decipher_key(recipient_id, db):
+            user = crud.get_user(db, recipient_id)
+            fb_bot.send_text_message(
+                recipient_id,
+                "Please enter the key that has been shared with you to decrypt the message"
+            )
+            crud.update_user_state(db, recipient_id, "WAIT_KEY")
+        ```
+
+        </details>
+    
+    * [`pre_decipher_message`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L130)
+        
+        This function saves the decryption key and asks the user to enter his message and change the state to `WAIT_MESSAGE_DECIFER`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def pre_decipher_message(message, recipient_id, db):
+            user = crud.get_user(db, recipient_id)
+            try:
+                crud.update_user_last_used_key(db, recipient_id, message)
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "Now enter the message that you want to decrypt."
+                )
+                crud.update_user_state(db, recipient_id, "WAIT_MESSAGE_DECIFER")
+            except Exception:
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "The key you've entered is not valid. Please make sure you have the correct key"
+                )
+        ```
+
+        </details>
+    
+    * [`decipher`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/actions.py#L145)
+        
+        This function decrypts a message and sends it to the user. It also asks him if he wants to decrypt anything else, and change the last intent to `CONFIRM_DECIPHER_AGAIN` and the state to `CONTINUE`
+
+        <details>
+        <summary>Show Code</summary>
+
+        ```python
+        def decipher(message, recipient_id, db):
+            try:
+                user = crud.get_user(db, recipient_id)
+                key = user.last_used_key
+                key = key.encode()
+                message = message.encode()
+                f = Fernet(key)
+                decrypted_message = f.decrypt(message)
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "This is the decrypted message. Keep it safe and delete after you read it."
+                )
+                fb_bot.send_text_message(
+                    recipient_id,
+                    decrypted_message.decode()
+                )
+                fb_bot.send_quick_replies(
+                recipient_id,
+                "Do you want to decrypt anything else?",
+                [
+                    {
+                        "content_type": 'text',
+                        "title": 'Yes',
+                        "payload": 'yes'
+                    },
+                    {
+                        "content_type": 'text',
+                        "title": 'No',
+                        "payload": 'no'
+                    }
+                ]
+            )
+                crud.update_user_last_intent(db, recipient_id, "CONFIRM_DECIPHER_AGAIN")
+                crud.update_user_state(db, recipient_id, "CONTINUE")
+            except Exception:
+                fb_bot.send_text_message(
+                    recipient_id,
+                    "The encrypted message you've entered is not valid. Please make sure you have the correct message"
+                )
+        ```
+
+        </details>
+
 
 * [`manager.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/dialog/manager.py)
 
-    In this file, We will trigger the actions that we created based on the user current state, last intent, and the current intent identified by Wit.
+    In this file, We will trigger the actions that we created based on the user current state, last intent, and the current intent identified by Wit. Let's go through them.
 
+    * [`process_message`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/manager.py#L12)
+
+        This function checks the current user state and depending on it, it will route the user into the right conversation path.
+
+    * [`get_response`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/afc0419dcbfa20e2d6b1181bf24a987e9377dc78/core/dialog/manager.py#L29)
+
+        This function checks the current identified intent and depending on it and the last recorded intent, it will route the user into the right conversation path.
 
 ### Our API Routes
 So for our application to send and recieve requests it has to have routes. We can find the routes of the app in the [`api`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/api) directory. Let's start with the [`api/endpoints/facebook.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/api/endpoints/facebook.py) file, which is the only route we have.
