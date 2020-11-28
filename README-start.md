@@ -330,6 +330,8 @@ cipher = Fernet(key)
 decrypted_message = cipher.decrypt(encrypted_message)
 ```
 
+---
+
 ### Explore the DB Models in Our App
 
 In [`core/db/database.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/db/database.py), We can find that we created an instance of the DB and then create a session that will be used to do all the CRUD operations needed.
@@ -392,6 +394,8 @@ So here we have two models ([`User`](https://github.com/Ahmed0Sultan/cipher-chat
 
 And in [`core/db/crud.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/db/crud.py) we will find all the CRUD (Create, Read, Update, Delete) operations that we are going to use like (creating a new user, checking if the user exists, creating a new key, or updating a user state)
 
+---
+
 ### Using Wit.ai in Our App
 In [`core/nlp`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/core/nlp) directory, We can find the [`engine.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/nlp/engine.py) file as below
 ```python
@@ -413,6 +417,8 @@ class NLPEngine:
         return intent
 ```
 In this file, we create a class where we initialize an instance of the `Wit` class with a server token that we get from the environment variables. Then we create a prediction function which takes a text message as an input and we try to extract the recognized intent from the response or return the fallback intent in the of nothing found
+
+---
 
 ### Using Messenger APIs in Our App
 To handle sending messages and other Messenger API calls, we use the code in [Pymessenger](https://github.com/davidchua/pymessenger) library and modify it to have additional functionalities like sending messages with quick replies. You can find the modified code in [`connector/facebook/bot.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/connector/facebook/bot.py) and the [Messenger API Docs](https://developers.facebook.com/docs/messenger-platform).
@@ -627,6 +633,7 @@ Now we will see how we can implement the different types of messages.
 
 And that's how we use the Send API.
 
+---
 
 ### Dialog Management
 
@@ -894,6 +901,7 @@ In [`core/dialog`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/co
 
         </details>
 
+---
 
 * [`manager.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/dialog/manager.py)
 
