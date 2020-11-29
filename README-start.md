@@ -135,24 +135,35 @@ Bot: "Do you want to decrypt anything else?"
     * Choose whether you want the app **Open** or **Private**
     * Click **Import** if you have a previous wit app or if you want to export the wit app used in this tutorial press [here](https://storage.googleapis.com/iam-sultan/cipher-bot-2020-10-03-07-00-12.zip)
     * Click **Create**
-
-
-<p align="center">
-<img align="center"  src="assets/create-app.png">
-</p>
+    
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center"  src="assets/create-app.png">
+    </p>
+    </details>
 
 * We will be redirected to the understanding page where we will enter utterances or training data. And you'll notice that for every utterance we enter, we will need to specify the intent of that utterance (Or create the intent in case if it doesn't exist) And after every utterance click on **Train and Validate**.
 
 
-<p align="center">
-<img align="center" src="assets/create-intent.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-intent.png">
+    </p>
+    </details>
+
+
 
 * You'll notice that over time Wit will automatically match the utterances that you enter with the correct intent and that indicates that we are on the right path.
 
-<p align="center">
-<img align="center" src="assets/auto-detect-intent.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/auto-detect-intent.png">
+    </p>
+    </details>
+
 
 * We will keep entering data and creating intents. We will mainly use 6 intents:
     * `greeting`
@@ -166,10 +177,14 @@ Bot: "Do you want to decrypt anything else?"
 
 * We can also test the Wit App using a curl request that is generated automatically by going to the **Settings** page
 
-![Test API](assets/test-api.png)
-<p align="center">
-<img align="center" src="assets/test-api.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/test-api.png">
+    </p>
+    </details>
+
+
 
 * And we can that the response will contain the predicted intent and the confidence of the prediction
 
@@ -192,9 +207,14 @@ Bot: "Do you want to decrypt anything else?"
 
 * In the same page we can get the **Server Access Token** as we will use it later when we build the app
 
-<p align="center">
-<img align="center" src="assets/app-settings_censored.jpg">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/app-settings_censored.jpg">
+    </p>
+    </details>
+
+
 
 ## Create a Facebook Page and Facebook App to host the chatbot
 
@@ -205,42 +225,64 @@ For this part, we are going to create two things:
 * Go to this [page](https://www.facebook.com/pages/creation/?ref_type=comet_home) to start the process of creating the new page
 * Then choose your page name and category and click on the create button (And yes, that's it. you now have a page)
 
-<p align="center">
-<img align="center" src="assets/create-page-1.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-page-1.png">
+    </p>
+    </details>
+
+---
 
 ### 2. Facebook App
 
 * Go to [Facebook for Developers](https://developers.facebook.com/) and create an account if you don't have one and click on the **Create App** Button
 * Choose **Manage Business Integrations**
 
-<p align="center">
-<img align="center" src="assets/create-developer-app.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-developer-app.png">
+    </p>
+    </details>
 
 * Fill the required information and click on the **Create App ID**
 
-<p align="center">
-<img align="center" src="assets/create-fb-app-3.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-fb-app-3.png">
+    </p>
+    </details>
 
 * Then from the list of products shown, Click on **Set Up** on the Messenger card
 
-<p align="center">
-<img align="center" src="assets/create-fb-app-4.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-fb-app-4.png">
+    </p>
+    </details>
 
 * In the **Access Tokens** Section, Click on the **Add or Remove Pages** Button and choose the page that we created earlier and agree on the permissions needed.
 
-<p align="center">
-<img align="center" src="assets/create-fb-app-5.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-fb-app-5.png">
+    </p>
+    </details>
 
 * Then click on the **Generate Token** Button and keep the generated token safe as we will use it later.
 
-<p align="center">
-<img align="center" src="assets/create-fb-app-6.png">
-</p>
+    <details>
+    <summary>Show Image</summary>
+    <p align="center">
+    <img align="center" src="assets/create-fb-app-6.png">
+    </p>
+    </details>
+
+---
 
 ## Create Web Application using FastAPI and Integrate with Messenger and Wit 
 
@@ -304,7 +346,7 @@ FB_PAGE_ACCESS_TOKEN="Very_Secret_Token"
 FB_VERIFY_TOKEN="Very_Secret_Token"
 WIT_SERVER_TOKEN="Very_Secret_Token"
 ```
-
+---
 ### Introduction to Fernet
 So Fernet is a system for symmetric encryption/decryption. It also authenticates the message, which means that the recipient can tell if the message has been altered in any way from what was originally sent.
 
