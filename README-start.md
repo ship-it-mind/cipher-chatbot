@@ -957,6 +957,8 @@ In [`core/dialog`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/co
 
         This function checks the current identified intent and depending on it and the last recorded intent, it will route the user into the right conversation path.
 
+---
+
 ### Our API Routes
 So for our application to send and recieve requests it has to have routes. We can find the routes of the app in the [`api`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/api) directory. Let's start with the [`api/endpoints/facebook.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/api/endpoints/facebook.py) file, which is the only route we have.
 ```python
@@ -995,11 +997,106 @@ async def process_fb_requests(request: Request, db: Session = Depends(get_db)):
 So the route name is `/facebook-webhook` and it has two methods:
 * [`GET`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/f10bf2d047ba1463b767547d5894815b0f55a261/api/endpoints/facebook.py#L24)
 
-    So the `GET` method is used to verify the bot’s token and thus connect the app with Facebook messenger.
+    So the `GET` method is used to verify the bot’s token and thus connect the app with Facebook messenger. And this is done by checking if the [`hub.verify_token`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/b38d5fe6d0f4136ed0a3f89a1b843f7d845fc9a8/api/endpoints/facebook.py#L25) equals the `FB_VERIFY_TOKEN` that we have created in the `.env` file earlier. If they are equall to each other, then we will return the `hub.challenge` that was sent in the same request with a `200` status code. And if they are not equall to each other then we will return a `"Token Invalid"` message with a `403` status code and then the verification will fail.
+
+    <details>
+    <summary>Show Code</summary>
+
+    ```python
+    @router.get('/facebook-webhook')
+    async def verify_token(token: str = Query(None, alias="hub.verify_token"),
+    challenge: int = Query(None, alias="hub.challenge")):
+        if token == FB_VERIFY_TOKEN:
+            return challenge
+        else:
+            raise HTTPException(status_code=403, detail="Token invalid.")
+    ```
+
+    </details>
 
 * [`POST`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/f10bf2d047ba1463b767547d5894815b0f55a261/api/endpoints/facebook.py#L32)
 
-    The `POST` method is used by Facebook to send the messages that are sent by users to our web application. And we can find here that we handle two types of messages normal text `message` and a `postback` message.
+    The `POST` method is used by Facebook to send the messages that are sent by users to our web application. Multiple message can be sent in the same event so make sure that you iterate on the `entry` object as shown in the code snippist above. And we can find here that we handle two types of messages. Normal text [`message`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/b38d5fe6d0f4136ed0a3f89a1b843f7d845fc9a8/api/endpoints/facebook.py#L38) and a [`postback`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/b38d5fe6d0f4136ed0a3f89a1b843f7d845fc9a8/api/endpoints/facebook.py#L47) message. So let's see what happens for the two cases:
+
+    * [`message`]()
+        Here we recieve text messages or quick replies and in this tutorial we only use the text in the quick reply. You can read more about it in the official documentation [here](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messages)
+    
+        <details>
+        
+        <summary>Show Example</summary>
+
+        ```json
+        {
+            "object":"page",
+            "entry":[
+                {
+                    "id":"<PAGE_ID>",
+                    "time":1458692752478,
+                    "messaging":[
+                        {
+                            "sender":{
+                                "id":"<PSID>"
+                            },
+                            "recipient":{
+                                "id":"<PAGE_ID>"
+                            },
+                            "timestamp":1458692752478,
+                            "message":{
+                                "mid":"mid.1457764197618:41d102a3e1ae206a38",
+                                "text":"hello, world!",
+                                "quick_reply": {
+                                    "payload": "<DEVELOPER_DEFINED_PAYLOAD>"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+        ```
+
+        </details>
+    
+    * [`postback`]()
+        Here we recieve postbacks and in this tutorial we only use the title of the postback event. You can read more about it in the official documentation [here](https://developers.facebook.com/docs/messenger-platform/reference/webhook-events/messaging_postbacks)
+
+        <details>
+        <summary>Show Example</summary>
+
+        ```json
+        {
+            "object":"page",
+            "entry":[
+                {
+                    "id":"<PAGE_ID>",
+                    "time":1458692752478,
+                    "messaging":[
+                        {
+                            "sender":{
+                                "id":"<PSID>"
+                            },
+                            "recipient":{
+                                "id":"<PAGE_ID>"
+                            },
+                            "timestamp":1458692752478,
+                            "postback":{
+                                "title": "<TITLE_FOR_THE_CTA>",  
+                                "payload": "<USER_DEFINED_PAYLOAD>",
+                                "referral": {
+                                    "ref": "<USER_DEFINED_REFERRAL_PARAM>",
+                                    "source": "<SHORTLINK>",
+                                    "type": "OPEN_THREAD",
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+        ```
+
+        </details>
+    
 
 Then we import all the routes (Which in our case is only one) into another file [`api/api.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/api/api.py) which in turn gathers all the available routes under one instance of the [`APIRouter`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/f10bf2d047ba1463b767547d5894815b0f55a261/api/api.py#L5) class.
 ```python
@@ -1010,6 +1107,8 @@ from api.endpoints import facebook
 api_router = APIRouter()
 api_router.include_router(facebook.router, tags=["verify_token"])
 ```
+
+---
 
 ### Our Application Entry Point
 So After explaining the logic that resides in the application, let's explain how the app works.
@@ -1046,29 +1145,42 @@ $ ./ngrok http 8000
 
 We will copy the generated link (the one with https as Facebook requires the webhook to be secure). And note that this link expires after eight hours and changes every time you run the command.
 
+
+<details>
+<summary>Show Image</summary>
 <p align="center">
 <img align="center" src="assets/ngrok.png">
 </p>
+</details>
 
 ### Setup the webhook in the Facebook App
 
 Back to [Facebook Developers](https://developers.facebook.com/), we can see the `Webhooks` section. Click on the `Add Callback URL`
 
+<details>
+<summary>Show Image</summary>
 <p align="center">
 <img align="center" src="assets/add-callback.png">
 </p>
+</details>
 
 And then enter the URL generated by ngrok and the `Verify Token` which we created in the `.env` file so Facebook can verify our webhook.
 
+<details>
+<summary>Show Image</summary>
 <p align="center">
 <img align="center" src="assets/edit-callback.png">
 </p>
+</details>
 
 In the same `Webhooks` section, click the **Add Subscriptions** button and check the (`messages`, `messaging_postbacks`, `message_deliveries`) boxes and click **Save**
 
+<details>
+<summary>Show Image</summary>
 <p align="center">
 <img align="center" src="assets/subs.png">
 </p>
+</details>
 
 **Congratulations**, That's it. You can now go to the page you created and start sharing encrypted messages with your friends.
 
