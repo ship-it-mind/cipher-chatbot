@@ -1,51 +1,84 @@
+
 # Build a Message Encryptor/Decryptor Chatbot on Messenger using Wit.ai, Messenger, FastAPI
 
-## Overview
+##  1. <a name='Overview'></a>Overview
 In this tutorial, we are going to learn about wit and how we can use it to build a smart chatbot that can understand us and help us encrypt and decrypt messages using a secret key to help transfer encrypted messages with your friends.
 
-## Prerequisites
+##  2. <a name='Prerequisites'></a>Prerequisites
 *   A [Wit.ai](https://wit.ai/) account
 *   Familiar with Python Programming
 *   Familiar with Backend Development
 
 
-## Table of Content
-So these are the key points that we will cover:
-*   [Introduction about the tools used](#Introduction-about-the-tools-used)
-*   [Design the user interaction and cover the basic scenarios](#Design-the-user-interaction-and-cover-the-basic-scenarios)
-*   [Create and train a Wit app to do natural language processing (NLP)](#Create-and-train-a-Wit-app-to-do-natural-language-processing)
-*   [Create a Facebook Page and Facebook App to host the chatbot](#Create-a-Facebook-Page-and-Facebook-App-to-host-the-chatbot)
-*   [Create Web Application using FastAPI and Integrate with Messenger and Wit](#Create-Web-Application-using-FastAPI-and-Integrate-with-Messenger-and-Wit)
-*   [Deploy the Web Application using ngrok](#Deploy-the-Web-Application-using-ngrok)
-*   [Next Steps](#Next-Steps)
-*   [Resources](#Resources)
+##  3. <a name='TableofContent'></a>Table of Content
+<!-- vscode-markdown-toc -->
+* 1. [Overview](#Overview)
+* 2. [Prerequisites](#Prerequisites)
+* 3. [Table of Content](#TableofContent)
+* 4. [Concepts](#Concepts)
+	* 4.1. [NLP](#NLP)
+	* 4.2. [Webhook](#Webhook)
+	* 4.3. [Encryption and Decryption](#EncryptionandDecryption)
+* 5. [Introduction about the tools used](#Introductionaboutthetoolsused)
+	* 5.1. [Wit.ai](#Wit.ai)
+	* 5.2. [Messenger](#Messenger)
+	* 5.3. [Bot Society](#BotSociety)
+	* 5.4. [FastAPI](#FastAPI)
+* 6. [The Practical Part](#ThePracticalPart)
+* 7. [Design the user interaction and cover the basic scenarios](#Designtheuserinteractionandcoverthebasicscenarios)
+* 8. [Create and train a Wit app to do natural language processing](#CreateandtrainaWitapptodonaturallanguageprocessing)
+* 9. [Create a Facebook Page and Facebook App to host the chatbot](#CreateaFacebookPageandFacebookApptohostthechatbot)
+	* 9.1. [Facebook Page](#FacebookPage)
+	* 9.2. [Facebook App](#FacebookApp)
+* 10. [Create Web Application using FastAPI and Integrate with Messenger and Wit](#CreateWebApplicationusingFastAPIandIntegratewithMessengerandWit)
+	* 10.1. [Clone Project Repository](#CloneProjectRepository)
+	* 10.2. [This is a tree that demonstrates the files and directories in the project.](#Thisisatreethatdemonstratesthefilesanddirectoriesintheproject.)
+	* 10.3. [Create and Activate a Virtual Environment](#CreateandActivateaVirtualEnvironment)
+	* 10.4. [Install Requirements](#InstallRequirements)
+	* 10.5. [Set Environment Variables](#SetEnvironmentVariables)
+	* 10.6. [Introduction to Fernet](#IntroductiontoFernet)
+		* 10.6.1. [Create a key](#Createakey)
+		* 10.6.2. [Encrypting a message](#Encryptingamessage)
+		* 10.6.3. [Decrypting a message](#Decryptingamessage)
+	* 10.7. [Explore the DB Models in Our App](#ExploretheDBModelsinOurApp)
+	* 10.8. [Using Wit.ai in Our App](#UsingWit.aiinOurApp)
+	* 10.9. [Using Messenger APIs in Our App](#UsingMessengerAPIsinOurApp)
+	* 10.10. [Dialog Management](#DialogManagement)
+	* 10.11. [Our API Routes](#OurAPIRoutes)
+	* 10.12. [Our Application Entry Point](#OurApplicationEntryPoint)
+	* 10.13. [Run Our App](#RunOurApp)
+* 11. [Deploy the Web Application using ngrok](#DeploytheWebApplicationusingngrok)
+	* 11.1. [Setup the webhook in the Facebook App](#SetupthewebhookintheFacebookApp)
+* 12. [Next Steps](#NextSteps)
+* 13. [Resources](#Resources)
+* 14. [License](#License)
 
-## Concepts
+##  4. <a name='Concepts'></a>Concepts
 To truly understand the next sections, there are some concepts that we must go through and elaborate first.
 
-### NLP
+###  4.1. <a name='NLP'></a>NLP
 
-### Webhook
+###  4.2. <a name='Webhook'></a>Webhook
 
-### Encryption and Decryption
+###  4.3. <a name='EncryptionandDecryption'></a>Encryption and Decryption
 
-## Introduction about the tools used
+##  5. <a name='Introductionaboutthetoolsused'></a>Introduction about the tools used
 In this tutorial, We will create a chatbot on Messenger that will help users encrypt messages using a pre-generated key so they can share the encrypted message with their friends who will decrypt this message using the same pre-generated key. So we will start by giving a simple introduction to the frameworks and APIs we are going to use.
 
-### Wit.ai
+###  5.1. <a name='Wit.ai'></a>Wit.ai
 
 Wit is a natural language processing engine, It helps understand text and extract entities. And it makes the process of creating bots or apps that talk to people easier. In the scope of this project, we will use wit to understand the messages that will be sent by our users.
 
-### Messenger
+###  5.2. <a name='Messenger'></a>Messenger
 
-### Bot Society
+###  5.3. <a name='BotSociety'></a>Bot Society
 
-### FastAPI
+###  5.4. <a name='FastAPI'></a>FastAPI
 FastAPI is a modern, fast (high-performance), a web framework for building APIs. It’s very fast, intuitive, and easy to use. And it provides automatic swagger docs (Yaaaaay). 
 
-## The Practical Part
+##  6. <a name='ThePracticalPart'></a>The Practical Part
 
-## Design the user interaction and cover the basic scenarios
+##  7. <a name='Designtheuserinteractionandcoverthebasicscenarios'></a>Design the user interaction and cover the basic scenarios
 
 This is usually the most important step in building a chatbot because it has a big impact on the user experience with the chatbot. So this step needs to be revisited every now and then to ensure a good conversation flow and experience. In this tutorial, we will not focus on this part and we will use a basic conversation flow like below. You can view an interactive prototype built using Bot Society [here](https://app.botsociety.io/2.0/designs/5fbec9d4a159b908db2f63c1?m=interactive).
 
@@ -127,7 +160,7 @@ Bot: "Do you want to decrypt anything else?"
 
 </details>
 
-## Create and train a Wit app to do natural language processing
+##  8. <a name='CreateandtrainaWitapptodonaturallanguageprocessing'></a>Create and train a Wit app to do natural language processing
 
 * Create a new Wit App
     * Choose the name of your app
@@ -216,11 +249,11 @@ Bot: "Do you want to decrypt anything else?"
 
 
 
-## Create a Facebook Page and Facebook App to host the chatbot
+##  9. <a name='CreateaFacebookPageandFacebookApptohostthechatbot'></a>Create a Facebook Page and Facebook App to host the chatbot
 
 For this part, we are going to create two things:
 
-### 1. Facebook Page
+###  9.1. <a name='FacebookPage'></a>Facebook Page
 
 * Go to this [page](https://www.facebook.com/pages/creation/?ref_type=comet_home) to start the process of creating the new page
 * Then choose your page name and category and click on the create button (And yes, that's it. you now have a page)
@@ -234,7 +267,7 @@ For this part, we are going to create two things:
 
 ---
 
-### 2. Facebook App
+###  9.2. <a name='FacebookApp'></a>Facebook App
 
 * Go to [Facebook for Developers](https://developers.facebook.com/) and create an account if you don't have one and click on the **Create App** Button
 * Choose **Manage Business Integrations**
@@ -284,18 +317,18 @@ For this part, we are going to create two things:
 
 ---
 
-## Create Web Application using FastAPI and Integrate with Messenger and Wit 
+##  10. <a name='CreateWebApplicationusingFastAPIandIntegratewithMessengerandWit'></a>Create Web Application using FastAPI and Integrate with Messenger and Wit 
 
 This section illustrates how you can use this repo to build the chatbot on your own page. You can find the source code in this [repo](https://github.com/Ahmed0Sultan/cipher-chatbot) so download it and follow these steps.
 
-### Clone Project Repository
+###  10.1. <a name='CloneProjectRepository'></a>Clone Project Repository
 
 ```
 $ git clone https://github.com/Ahmed0Sultan/cipher-chatbot.git
 $ cd cipher-chatbot
 ```
 
-### This is a tree that demonstrates the files and directories in the project.
+###  10.2. <a name='Thisisatreethatdemonstratesthefilesanddirectoriesintheproject.'></a>This is a tree that demonstrates the files and directories in the project.
 
 ```
 └── cipher-chatbot
@@ -325,20 +358,20 @@ $ cd cipher-chatbot
     └── variables.py
 ```
 
-### Create and Activate a Virtual Environment
+###  10.3. <a name='CreateandActivateaVirtualEnvironment'></a>Create and Activate a Virtual Environment
 
 ```
 $ python -m venv venv
 $ source ./venv/bin/activate
 ```
 
-### Install Requirements
+###  10.4. <a name='InstallRequirements'></a>Install Requirements
 
 ```
 $ pip install -r requirements.txt
 ```
 
-### Set Environment Variables
+###  10.5. <a name='SetEnvironmentVariables'></a>Set Environment Variables
 Create a new file named `.env` which will contain the secret tokens that we will use to integrate with Wit and Messenger (That we have already got in earlier steps)
 
 ```env
@@ -347,25 +380,25 @@ FB_VERIFY_TOKEN="Very_Secret_Token"
 WIT_SERVER_TOKEN="Very_Secret_Token"
 ```
 ---
-### Introduction to Fernet
+###  10.6. <a name='IntroductiontoFernet'></a>Introduction to Fernet
 So Fernet is a system for symmetric encryption/decryption. It also authenticates the message, which means that the recipient can tell if the message has been altered in any way from what was originally sent.
 
 And we can find examples to use it below
 
-#### Create a key
+####  10.6.1. <a name='Createakey'></a>Create a key
 ```python
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
 ```
-#### Encrypting a message
+####  10.6.2. <a name='Encryptingamessage'></a>Encrypting a message
 ```python
 cipher = Fernet(key)
 
 message = "Very Secret Message".encode('utf-8')
 encrypted_message = cipher.encrypt(message)
 ```
-#### Decrypting a message
+####  10.6.3. <a name='Decryptingamessage'></a>Decrypting a message
 ```python
 cipher = Fernet(key)
 
@@ -374,7 +407,7 @@ decrypted_message = cipher.decrypt(encrypted_message)
 
 ---
 
-### Explore the DB Models in Our App
+###  10.7. <a name='ExploretheDBModelsinOurApp'></a>Explore the DB Models in Our App
 
 In [`core/db/database.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/db/database.py), We can find that we created an instance of the DB and then create a session that will be used to do all the CRUD operations needed.
 
@@ -438,7 +471,7 @@ And in [`core/db/crud.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/m
 
 ---
 
-### Using Wit.ai in Our App
+###  10.8. <a name='UsingWit.aiinOurApp'></a>Using Wit.ai in Our App
 In [`core/nlp`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/core/nlp) directory, We can find the [`engine.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/core/nlp/engine.py) file as below
 ```python
 from wit import Wit
@@ -462,7 +495,7 @@ In this file, we create a class where we initialize an instance of the `Wit` cla
 
 ---
 
-### Using Messenger APIs in Our App
+###  10.9. <a name='UsingMessengerAPIsinOurApp'></a>Using Messenger APIs in Our App
 To handle sending messages and other Messenger API calls, we use the code in [Pymessenger](https://github.com/davidchua/pymessenger) library and modify it to have additional functionalities like sending messages with quick replies. You can find the modified code in [`connector/facebook/bot.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/connector/facebook/bot.py) and the [Messenger API Docs](https://developers.facebook.com/docs/messenger-platform).
 
 In this part we will see how we can send different types of messages using Messenger API. For this, we have the [Send API](https://developers.facebook.com/docs/messenger-platform/reference/send-api/) which we will use to send different types of messages to our users.
@@ -677,7 +710,7 @@ And that's how we use the Send API.
 
 ---
 
-### Dialog Management
+###  10.10. <a name='DialogManagement'></a>Dialog Management
 
 There is a very important concept we should introduce here named `State`. So every step in the conversation that users will have should be categorized into a state category. To make it easy, here is a table that have the states used in the tutorial.
 
@@ -959,7 +992,7 @@ In [`core/dialog`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/co
 
 ---
 
-### Our API Routes
+###  10.11. <a name='OurAPIRoutes'></a>Our API Routes
 So for our application to send and recieve requests it has to have routes. We can find the routes of the app in the [`api`](https://github.com/Ahmed0Sultan/cipher-chatbot/tree/master/api) directory. Let's start with the [`api/endpoints/facebook.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/api/endpoints/facebook.py) file, which is the only route we have.
 ```python
 @router.get('/facebook-webhook')
@@ -1110,7 +1143,7 @@ api_router.include_router(facebook.router, tags=["verify_token"])
 
 ---
 
-### Our Application Entry Point
+###  10.12. <a name='OurApplicationEntryPoint'></a>Our Application Entry Point
 So After explaining the logic that resides in the application, let's explain how the app works.
 
 We can find in the [`main.py`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/main.py) file that we initialize an instance of the [`FastAPI`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/f10bf2d047ba1463b767547d5894815b0f55a261/main.py#L5) class which we will use later to run the app. Then we will import the instance of [`APIRouter`](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/f10bf2d047ba1463b767547d5894815b0f55a261/api/api.py#L5)  that we created before and added to our app.
@@ -1124,14 +1157,14 @@ app = FastAPI()
 app.include_router(api_router)
 ```
 
-### Run Our App
+###  10.13. <a name='RunOurApp'></a>Run Our App
 
 To run the app just enter this command.
 ```sh
 $ uvicorn main:app
 ```
 
-## Deploy the Web Application using ngrok
+##  11. <a name='DeploytheWebApplicationusingngrok'></a>Deploy the Web Application using ngrok
 So we can find that our app works on `localhost:8000` and it only works for requests created on the same computer as the running server. So we need to let Facebook know how to reach the FastAPI server. This can be done using ngrok.
 
 Let's go to the [ngrok download page](https://ngrok.com/download) and install the version suitable for our operating system
@@ -1153,7 +1186,7 @@ We will copy the generated link (the one with https as Facebook requires the web
 </p>
 </details>
 
-### Setup the webhook in the Facebook App
+###  11.1. <a name='SetupthewebhookintheFacebookApp'></a>Setup the webhook in the Facebook App
 
 Back to [Facebook Developers](https://developers.facebook.com/), we can see the `Webhooks` section. Click on the `Add Callback URL`
 
@@ -1185,15 +1218,15 @@ In the same `Webhooks` section, click the **Add Subscriptions** button and check
 **Congratulations**, That's it. You can now go to the page you created and start sharing encrypted messages with your friends.
 
 
-## Next Steps
+##  12. <a name='NextSteps'></a>Next Steps
 Next, We will make the app voice-enabled using [Wit.ai](https://wit.ai), and add the option to share the keys and messages between users.
 
-## Resources
+##  13. <a name='Resources'></a>Resources
 
 * [Wit Documentation](https://wit.ai/docs)
 * [Messenger API Docs](https://developers.facebook.com/docs/messenger-platform)
 * [FastAPI](https://fastapi.tiangolo.com/)
 
 
-## License
+##  14. <a name='License'></a>License
 The tutorial and the source code are licensed, as found in the [LICENSE](https://github.com/Ahmed0Sultan/cipher-chatbot/blob/master/LICENSE) file.
