@@ -13,10 +13,10 @@ In this tutorial, we are going to learn about wit and how we can use it to build
 * [Overview](#Overview)
 * [Prerequisites](#Prerequisites)
 * [Table of Content](#TableofContent)
-* [Introduction about the tools used](#Introductionaboutthetoolsused)
+* [Tools](#Introductionaboutthetoolsused)
 	* [Wit.ai](#Wit.ai)
 	* [FastAPI](#FastAPI)
-* [Design the user interaction and cover the basic scenarios](#Designtheuserinteractionandcoverthebasicscenarios)
+* [Conversation Design](#Designtheuserinteractionandcoverthebasicscenarios)
 * [Create and train a Wit app to do natural language processing](#CreateandtrainaWitapptodonaturallanguageprocessing)
 * [Create a Facebook Page and Facebook App to host the chatbot](#CreateaFacebookPageandFacebookApptohostthechatbot)
 	* [Facebook Page](#FacebookPage)
@@ -44,7 +44,7 @@ In this tutorial, we are going to learn about wit and how we can use it to build
 * [Resources](#Resources)
 * [License](#License)
 
-## <a name='Introductionaboutthetoolsused'></a>Introduction about the tools used
+## <a name='Introductionaboutthetoolsused'></a>Tools
 In this tutorial, We will create a chatbot on Messenger that will help users encrypt messages using a pre-generated key so they can share the encrypted message with their friends who will decrypt this message using the same pre-generated key. So we will start by giving a simple introduction to the frameworks and APIs we are going to use.
 
 ### <a name='Wit.ai'></a>Wit.ai
@@ -54,7 +54,7 @@ Wit is a natural language processing engine, It helps understand text and extrac
 ### <a name='FastAPI'></a>FastAPI
 FastAPI is a modern, fast (high-performance), a web framework for building APIs. It’s very fast, intuitive, and easy to use. And it provides automatic swagger docs (Yaaaaay). 
 
-## <a name='Designtheuserinteractionandcoverthebasicscenarios'></a>Design the user interaction and cover the basic scenarios
+## <a name='Designtheuserinteractionandcoverthebasicscenarios'></a>Conversation Design
 
 This is usually the most important step in building a chatbot because it has a big impact on the user experience with the chatbot. So this step needs to be revisited every now and then to ensure a good conversation flow and experience. In this tutorial, we will not focus on this part and we will use a basic conversation flow like below. You can view an interactive prototype built using Bot Society [here](https://app.botsociety.io/2.0/designs/5fbec9d4a159b908db2f63c1?m=interactive).
 
