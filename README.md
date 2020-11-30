@@ -19,6 +19,8 @@ In this tutorial, we are going to learn about wit and how we can use it to build
 * [Table of Content](#TableofContent)
 * [Tools](#Introductionaboutthetoolsused)
 	* [Wit.ai](#Wit.ai)
+    * [Messenger](#Messenger)
+    * [BotSociety](#BotSociety)
 	* [FastAPI](#FastAPI)
 * [Conversation Design](#Designtheuserinteractionandcoverthebasicscenarios)
 * [Setup Accounts](#Setupaccounts)
@@ -57,6 +59,14 @@ In this tutorial, We will create a chatbot on Messenger that will help users enc
 ### <a name='Wit.ai'></a>Wit.ai
 
 Wit is a natural language processing engine, It helps understand text and extract entities. And it makes the process of creating bots or apps that talk to people easier. In the scope of this project, we will use wit to understand the messages that will be sent by our users.
+
+### <a name='Messenger'></a>Messenger
+
+Messenger is a messaging platform used for sharing instant text messages, images, videos and voice messages between users.
+
+### <a name='BotSociety'></a>BotSociety
+
+BotSociety is chatbot prototyping tool that allows us to design conversations and quick prototypes that can accelerate the process of building a chatbot.
 
 ### <a name='FastAPI'></a>FastAPI
 FastAPI is a modern, fast (high-performance), a web framework for building APIs. It’s very fast, intuitive, and easy to use. And it provides automatic swagger docs (Yaaaaay). 
