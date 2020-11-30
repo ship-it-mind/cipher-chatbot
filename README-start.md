@@ -61,6 +61,10 @@ Wit is a natural language processing engine, It helps understand text and extrac
 ### <a name='FastAPI'></a>FastAPI
 FastAPI is a modern, fast (high-performance), a web framework for building APIs. It’s very fast, intuitive, and easy to use. And it provides automatic swagger docs (Yaaaaay). 
 
+<p align="center">
+<img align="center" src="https://media.giphy.com/media/l2Je0ZdFV02q7wncc/giphy.gif">
+</p>
+
 ---
 
 ## <a name='Designtheuserinteractionandcoverthebasicscenarios'></a>Conversation Design
@@ -234,7 +238,7 @@ Bot: "Do you want to decrypt anything else?"
     </p>
     </details>
 
-
+---
 
 ## <a name='CreateaFacebookPageandFacebookApptohostthechatbot'></a>Create Facebook Messenger Channel
 
@@ -321,6 +325,8 @@ $ cd cipher-chatbot
 
 ### <a name='Thisisatreethatdemonstratesthefilesanddirectoriesintheproject.'></a>Project Structure
 
+Here you can find the structure of the project.
+
 ```
 └── cipher-chatbot
     ├── api
@@ -350,6 +356,7 @@ $ cd cipher-chatbot
 ```
 
 ### <a name='CreateandActivateaVirtualEnvironment'></a>Virtual Environment
+Create a virtual environment to start installing the project requiremnets in an isolated environment.
 
 ```
 $ python -m venv venv
@@ -357,6 +364,8 @@ $ source ./venv/bin/activate
 ```
 
 ### <a name='InstallRequirements'></a>Install Requirements
+
+Here you will install the project requirements.
 
 ```
 $ pip install -r requirements.txt
@@ -698,6 +707,10 @@ Now we will see how we can implement the different types of messages.
 </details>
 
 And that's how we use the Send API.
+
+<p align="center">
+<img align="center" src="https://media.giphy.com/media/WmkqburJqXziM/giphy.gif">
+</p>
 
 ---
 
