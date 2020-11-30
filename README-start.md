@@ -153,6 +153,8 @@ Bot: "Do you want to decrypt anything else?"
 
 ### <a name='CreateandtrainaWitapptodonaturallanguageprocessing'></a>Create and Train a Wit App
 
+Here we will create a new wit app that we will use train by filling the app with data. Go to wit.ai and login, Then let's start by following the next steps.
+
 * Create a new Wit App
     * Choose the name of your app
     * Choose **English** as the language of the app
@@ -210,24 +212,24 @@ Bot: "Do you want to decrypt anything else?"
 
 
 
-* And we can that the response will contain the predicted intent and the confidence of the prediction
+* And we can see that the response will contain the predicted intent and the confidence of the prediction
 
-```json
-{
-    "text": "decipher the message",
-    "intents": [{
-        "id": "935018250326137",
-        "name": "decipher",
-        "confidence": 0.9883
-    }],
-    "entities": {
+    ```json
+    {
+        "text": "decipher the message",
+        "intents": [{
+            "id": "935018250326137",
+            "name": "decipher",
+            "confidence": 0.9883
+        }],
+        "entities": {
 
-    },
-    "traits": {
+        },
+        "traits": {
 
+        }
     }
-}
-```
+    ```
 
 * In the same page we can get the **Server Access Token** as we will use it later when we build the app
 
@@ -709,7 +711,7 @@ Now we will see how we can implement the different types of messages.
 And that's how we use the Send API.
 
 <p align="center">
-<img align="center" src="https://media.giphy.com/media/WmkqburJqXziM/giphy.gif">
+<img align="center" src="https://media4.giphy.com/media/Nk9vmTrmOVNuw/giphy.gif">
 </p>
 
 ---
